@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lumavexel | Insurance Bulletin Monitor</title>
+  <meta name="description" content="Never miss a state insurance department bulletin again. Lumavexel monitors all 50 states daily and emails your compliance team the moment new bulletins are posted." />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #111827;
+      background: #fff;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 48px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .logo {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a56db;
+      letter-spacing: -0.5px;
+    }
+    .nav-cta {
+      background: #1a56db;
+      color: #fff;
+      padding: 10px 22px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .nav-cta:hover { background: #1641b0; }
+
+    /* HERO */
+    .hero {
+      max-width: 760px;
+      margin: 80px auto;
+      text-align: center;
+      padding: 0 24px;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: #eff6ff;
+      color: #1a56db;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: 52px;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      margin-bottom: 20px;
+      color: #111827;
+    }
+    .hero h1 span { color: #1a56db; }
+    .hero p {
+      font-size: 20px;
+      color: #6b7280;
+      line-height: 1.6;
+      margin-bottom: 36px;
+      max-width: 580px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .hero-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      background: #1a56db;
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .btn-primary:hover { background: #1641b0; }
+    .btn-secondary {
+      background: #f9fafb;
+      color: #374151;
+      padding: 14px 28px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 600;
+      border: 1px solid #e5e7eb;
+    }
+
+    /* SOCIAL PROOF */
+    .proof {
+      text-align: center;
+      padding: 16px 24px;
+      color: #6b7280;
+      font-size: 14px;
+      margin-bottom: 80px;
+    }
+    .proof strong { color: #111827; }
+
+    /* HOW IT WORKS */
+    .section {
+      max-width: 900px;
+      margin: 0 auto 80px;
+      padding: 0 24px;
+    }
+    .section-label {
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #1a56db;
+      margin-bottom: 12px;
+    }
+    .section h2 {
+      text-align: center;
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 48px;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+    .step {
+      text-align: center;
+      padding: 32px 24px;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+    }
+    .step-icon {
+      font-size: 36px;
+      margin-bottom: 16px;
+    }
+    .step h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .step p {
+      font-size: 14px;
+      color: #6b7280;
+      line-height: 1.6;
+    }
+
+    /* FEATURES */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+    .feature {
+      padding: 28px;
+      background: #f9fafb;
+      border-radius: 12px;
+    }
+    .feature h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .feature p {
+      font-size: 14px;
+      color: #6b7280;
+      line-height: 1.6;
+    }
+
+    /* PRICING */
+    .pricing-card {
+      max-width: 480px;
+      margin: 0 auto;
+      border: 2px solid #1a56db;
+      border-radius: 16px;
+      padding: 40px;
+      text-align: center;
+    }
+    .pricing-card .plan-name {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #1a56db;
+      margin-bottom: 8px;
+    }
+    .pricing-card .price {
+      font-size: 56px;
+      font-weight: 800;
+      letter-spacing: -2px;
+      margin-bottom: 4px;
+    }
+    .pricing-card .price span {
+      font-size: 20px;
+      font-weight: 500;
+      color: #6b7280;
+      letter-spacing: 0;
+    }
+    .pricing-card .billing {
+      color: #6b7280;
+      font-size: 14px;
+      margin-bottom: 28px;
+    }
+    .pricing-features {
+      list-style: none;
+      margin-bottom: 32px;
+      text-align: left;
+    }
+    .pricing-features li {
+      padding: 8px 0;
+      font-size: 15px;
+      color: #374151;
+      border-bottom: 1px solid #f3f4f6;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .pricing-features li::before {
+      content: '✓';
+      color: #1a56db;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .pricing-cta {
+      display: block;
+      background: #1a56db;
+      color: #fff;
+      padding: 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .pricing-cta:hover { background: #1641b0; }
+
+    /* CTA BANNER */
+    .cta-banner {
+      background: #1a56db;
+      color: #fff;
+      text-align: center;
+      padding: 64px 24px;
+      margin-top: 80px;
+    }
+    .cta-banner h2 {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+    .cta-banner p {
+      font-size: 18px;
+      opacity: 0.8;
+      margin-bottom: 32px;
+    }
+    .cta-banner a {
+      background: #fff;
+      color: #1a56db;
+      padding: 14px 32px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      color: #9ca3af;
+      font-size: 13px;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 36px; }
+      .steps { grid-template-columns: 1fr; }
+      .features { grid-template-columns: 1fr; }
+      nav { padding: 16px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo">Lumavexel</div>
+    <a href="mailto:lumavexel@outlook.com" class="nav-cta">Get Started</a>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">🔔 All 50 States Monitored Daily</div>
+    <h1>Never Miss an Insurance <span>Regulatory Bulletin</span> Again</h1>
+    <p>Lumavexel monitors every state insurance department website daily and emails your compliance team the moment new bulletins are published.</p>
+    <div class="hero-buttons">
+      <a href="mailto:lumavexel@outlook.com" class="btn-primary">Start Monitoring →</a>
+      <a href="#pricing" class="btn-secondary">See Pricing</a>
+    </div>
+  </div>
+  <div class="proof">
+    Covering <strong>all 50 states + DC</strong> · Updated every 24 hours · Delivered straight to your inbox
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="section">
+    <div class="section-label">How It Works</div>
+    <h2>Set it up once. Stay compliant forever.</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-icon">🔍</div>
+        <h3>We Scrape Daily</h3>
+        <p>Our system checks every state insurance department bulletin page every single day — so you don't have to.</p>
+      </div>
+      <div class="step">
+        <div class="step-icon">🆕</div>
+        <h3>We Detect New Bulletins</h3>
+        <p>The moment a new bulletin, notice, or circular is posted, we catch it and flag it as new.</p>
+      </div>
+      <div class="step">
+        <div class="step-icon">📧</div>
+        <h3>You Get an Email</h3>
+        <p>A clean digest lands in your inbox with the bulletin title, state, and a direct link — no login required.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="section">
+    <div class="section-label">Features</div>
+    <h2>Everything your compliance team needs</h2>
+    <div class="features">
+      <div class="feature">
+        <h3>🗺️ All 50 States + DC</h3>
+        <p>Full national coverage across every state insurance department. No gaps, no missed jurisdictions.</p>
+      </div>
+      <div class="feature">
+        <h3>📬 Daily Email Digests</h3>
+        <p>Get a formatted email every morning listing every new bulletin published since your last alert.</p>
+      </div>
+      <div class="feature">
+        <h3>🎯 State Filtering</h3>
+        <p>Only care about certain states? We'll filter your alerts so you only see what's relevant to you.</p>
+      </div>
+      <div class="feature">
+        <h3>⚡ Same-Day Detection</h3>
+        <p>New bulletins are detected within 24 hours of being published — no more weekly manual checks.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRICING -->
+  <div class="section" id="pricing">
+    <div class="section-label">Pricing</div>
+    <h2>Simple, transparent pricing</h2>
+    <div class="pricing-card">
+      <div class="plan-name">Basic Plan</div>
+      <div class="price">$299<span>/mo</span></div>
+      <div class="billing">Billed monthly · Cancel anytime</div>
+      <ul class="pricing-features">
+        <li>All 50 states + DC monitored daily</li>
+        <li>Daily email digest to your inbox</li>
+        <li>State filtering by jurisdiction</li>
+        <li>Direct links to source bulletins</li>
+        <li>Email support</li>
+      </ul>
+      <a href="mailto:lumavexel@outlook.com" class="pricing-cta">Get Started Today</a>
+    </div>
+  </div>
+
+  <!-- CTA BANNER -->
+  <div class="cta-banner">
+    <h2>Stop checking 51 websites manually.</h2>
+    <p>Let Lumavexel handle it so your team can focus on compliance, not monitoring.</p>
+    <a href="mailto:lumavexel@outlook.com">Email Us to Get Started</a>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 Lumavexel · lumavexel@outlook.com · Cary, NC</p>
+  </footer>
+
+</body>
+</html>
