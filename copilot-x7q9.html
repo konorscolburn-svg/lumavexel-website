@@ -4,64 +4,248 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="robots" content="noindex,nofollow" />
-<title>Call Copilot</title>
+<title>Lumavexel — Call Command Center</title>
 <style>
   :root{--ink:#0f1b2d;--muted:#5b6b7f;--line:#e4e9f0;--bg:#f5f8fc;--card:#fff;
-    --brand:#1f6feb;--brand-d:#1554c0;--accent:#0fb5a6;--accent-d:#0b8e83;--red:#dc2626;}
+    --brand:#1f6feb;--brand-d:#1554c0;--accent:#0fb5a6;--accent-d:#0b8e83;--red:#dc2626;
+    --green:#16a34a;--amber:#d97706;--soft:#eef4ff;}
   *{box-sizing:border-box}
   body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    background:var(--bg);color:var(--ink);line-height:1.5;padding:18px;max-width:760px;margin:0 auto}
-  h1{font-size:21px;margin:0 0 2px}
-  .sub{color:var(--muted);font-size:13px;margin:0 0 14px}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:14px}
-  .ref{background:#0f1b2d;color:#fff;border:none}
-  .ref h2{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#9fb3c8;margin:0 0 5px}
-  .ref p{margin:0 0 10px;font-size:14px}.ref p:last-child{margin:0}
-  .ref .k{color:#7fe3d8;font-weight:600}
+    background:var(--bg);color:var(--ink);line-height:1.5}
+  .wrap{max-width:780px;margin:0 auto;padding:0 16px 60px}
+  /* ---- sticky header ---- */
+  header{position:sticky;top:0;z-index:20;background:rgba(245,248,252,.97);backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);padding:12px 0 0}
+  .hd{max-width:780px;margin:0 auto;padding:0 16px}
+  h1{font-size:18px;margin:0 0 8px;letter-spacing:-.2px}
+  h1 span{color:var(--muted);font-weight:500;font-size:13px}
+  .setup{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+  .setup label{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px}
+  .setup input,.setup select{font:inherit;font-size:14px;color:var(--ink);border:1px solid var(--line);
+    border-radius:9px;padding:7px 9px;background:#fff}
+  .setup input{width:120px}
+  .dial{margin-left:auto;background:var(--green);color:#fff;text-decoration:none;font-weight:700;font-size:15px;
+    padding:9px 14px;border-radius:10px;white-space:nowrap}
+  .tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;-webkit-overflow-scrolling:touch}
+  .tabs button{flex:0 0 auto;background:#fff;border:1px solid var(--line);color:var(--muted);font:inherit;
+    font-size:13px;font-weight:600;padding:8px 12px;border-radius:999px;cursor:pointer;white-space:nowrap}
+  .tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  /* ---- sections ---- */
+  section{display:none;padding-top:16px}
+  section.on{display:block;animation:f .15s ease}
+  @keyframes f{from{opacity:.4}to{opacity:1}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px 16px;margin-bottom:13px}
+  .say{background:#fff;border:2px solid var(--accent);border-radius:14px;padding:16px 18px;margin-bottom:12px;font-size:18px;line-height:1.55}
+  .say .lbl{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-d);font-weight:700;margin-bottom:6px}
+  .lead{background:var(--ink);color:#fff;border:none}
+  .lead .lbl{color:#7fe3d8}
+  h2.sec{font-size:12px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin:0 0 9px}
+  h3{font-size:14px;margin:16px 0 7px}
+  p{margin:0 0 10px}
+  .tip{font-size:13px;color:var(--muted)}
+  ul.chk{list-style:none;padding:0;margin:0}
+  ul.chk li{padding:9px 0 9px 30px;border-bottom:1px solid var(--line);position:relative;font-size:14.5px}
+  ul.chk li:last-child{border:none}
+  ul.chk li:before{content:"☐";position:absolute;left:4px;top:8px;font-size:17px;color:var(--brand)}
+  .step{background:var(--soft);border:1px solid #d6e4ff;border-radius:11px;padding:12px 14px;margin-bottom:10px}
+  .step .n{display:inline-block;background:var(--brand);color:#fff;font-weight:700;font-size:12px;border-radius:6px;padding:1px 7px;margin-right:7px}
+  .q{font-size:16px;font-weight:600;color:var(--brand-d)}
+  /* objection live tool */
   .listen{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-  #mic{background:var(--accent);color:#fff;border:none;font-weight:700;font-size:16px;padding:14px 20px;border-radius:12px;cursor:pointer}
+  #mic{background:var(--accent);color:#fff;border:none;font-weight:700;font-size:16px;padding:13px 18px;border-radius:12px;cursor:pointer}
   #mic.on{background:var(--red)}
-  #status{font-size:13px;color:var(--muted)}
-  #status b{color:var(--ink)}
-  #heard{background:#fbfdff;border:1px dashed var(--line);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--muted);min-height:38px;margin-bottom:12px}
-  #panel{background:var(--card);border:2px solid var(--accent);border-radius:14px;padding:18px;margin-bottom:14px;min-height:80px;font-size:18px;line-height:1.55}
+  #status{font-size:13px;color:var(--muted)}#status b{color:var(--ink)}
+  #heard{background:#fbfdff;border:1px dashed var(--line);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--muted);min-height:36px;margin-bottom:12px}
+  #panel{background:#fff;border:2px solid var(--accent);border-radius:14px;padding:17px;margin-bottom:13px;min-height:74px;font-size:18px;line-height:1.55}
   #panel .lbl{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-d);font-weight:700;margin-bottom:6px}
   #panel .ph{color:var(--muted);font-size:14px}
-  h2.sec{font-size:12px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin:0 0 10px}
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .obj{background:#eef4ff;border:1px solid #d6e4ff;color:var(--brand-d);font-weight:600;font-size:13px;text-align:left;padding:10px 11px;border-radius:10px;cursor:pointer}
+  .obj{background:var(--soft);border:1px solid #d6e4ff;color:var(--brand-d);font-weight:600;font-size:13px;text-align:left;padding:10px 11px;border-radius:10px;cursor:pointer}
   .obj:hover,.obj.active{background:var(--brand);color:#fff;border-color:var(--brand)}
-  .note{font-size:12px;color:var(--muted);margin-top:8px}
-  .warn{font-size:12px;color:#92500a;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:10px 12px;margin-top:14px}
+  /* copy buttons */
+  .copy{background:#fff;border:1px solid var(--brand);color:var(--brand-d);font:inherit;font-size:12px;font-weight:600;
+    padding:5px 11px;border-radius:8px;cursor:pointer;margin-top:8px}
+  .copy:active{background:var(--brand);color:#fff}
+  .copy.done{background:var(--green);color:#fff;border-color:var(--green)}
+  .link{background:#0b1220;color:#7fe3d8;border-radius:9px;padding:9px 11px;font-size:14px;word-break:break-all;font-family:ui-monospace,Menlo,monospace}
+  /* shops */
+  .shop{border:1px solid var(--line);border-radius:12px;padding:11px 12px;margin-bottom:9px;background:#fff}
+  .shop .top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .shop .nm{font-weight:700;font-size:15px}
+  .shop .meta{font-size:12px;color:var(--muted)}
+  .shop .call{margin-left:auto;background:var(--green);color:#fff;text-decoration:none;font-weight:700;font-size:13px;padding:6px 11px;border-radius:8px}
+  .shop .acts{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}
+  .shop .acts button{flex:1;min-width:88px;font:inherit;font-size:12px;font-weight:600;border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:8px;padding:7px 4px;cursor:pointer}
+  .badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px}
+  .b-booked{background:#dcfce7;color:#15803d}.b-vm{background:#fef3c7;color:#92500a}.b-cb{background:#dbeafe;color:#1554c0}.b-no{background:#fee2e2;color:#b91c1c}
+  .warn{font-size:12px;color:#92500a;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:10px 12px;margin-top:8px}
+  .ok{font-size:12px;color:#166534;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:10px 12px}
+  b.hl{color:var(--brand-d)}
 </style>
 </head>
 <body>
-  <h1>📞 Call Copilot <span style="font-size:13px;color:#5b6b7f;font-weight:400">— voice mode</span></h1>
-  <p class="sub">Put the call on speaker, hit Listen, and as they talk your response pops up. Tap buttons are always there as backup. Goal: <b>book the 10-min demo.</b></p>
-
-  <div class="card ref">
-    <h2>Opener</h2>
-    <p>"Hey, is [Owner] around? … This is [your name] with Lumavexel — I know I caught you cold, gimme 30 seconds and you can tell me to buzz off? I help [metro] shops stop losing jobs to calls that ring out when you're slammed."</p>
-    <h2>Close</h2>
-    <p><span class="k">Free pilot:</span> "I'll set the whole thing up — you don't pay until it catches you a real job. Worth 10 minutes to see how it'd work?"</p>
+<header>
+  <div class="hd">
+    <h1>📞 Lumavexel Call Command Center <span>— book the 10-min demo</span></h1>
+    <div class="setup">
+      <label>I'm <input id="nameIn" placeholder="first name" autocomplete="off"></label>
+      <label>Calling
+        <select id="shopIn"></select>
+      </label>
+      <a class="dial" id="dial" href="#">☎️ <span id="dialNum">pick a shop</span></a>
+    </div>
+    <div class="tabs" id="tabs">
+      <button data-t="before" class="on">1 · Before</button>
+      <button data-t="opener">2 · Opener</button>
+      <button data-t="answer">3 · They answer</button>
+      <button data-t="vm">4 · Voicemail</button>
+      <button data-t="obj">5 · Live help</button>
+      <button data-t="reply">6 · Replies</button>
+      <button data-t="shops">7 · Shops</button>
+    </div>
   </div>
+</header>
 
-  <div class="listen">
-    <button id="mic" onclick="toggle()">🎤 Start listening</button>
-    <div id="status">Mic off. Click to start (allow the mic when Chrome asks).</div>
-  </div>
-  <div id="heard"><span style="color:#9fb3c8">Live transcript will show here…</span></div>
+<div class="wrap">
 
-  <div id="panel"><span class="ph">Your suggested line appears here when it hears an objection — or tap one below.</span></div>
+  <!-- 1 BEFORE -->
+  <section data-s="before" class="on">
+    <div class="card lead say" style="border:none">
+      <div class="lbl">Remember</div>
+      You're not selling on this call. Your ONLY job is to get a <b style="color:#7fe3d8">yes to a 10-minute demo.</b> That's it. No pressure to close anything.
+    </div>
+    <div class="card">
+      <h2 class="sec">30-second prep checklist</h2>
+      <ul class="chk">
+        <li>Type your <b>first name</b> + pick the <b>shop</b> up top → every script fills in automatically.</li>
+        <li>Call from your <b>personal cell</b> — NOT the 941 number (that's your demo line).</li>
+        <li>Have this page open + your phone ready to text the Calendly link.</li>
+        <li>Stand up, smile — it carries through the phone. Then tap ☎️ up top.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2 class="sec">What to expect (so you don't quit early)</h2>
+      <p class="tip">Most calls go to voicemail or a "not now" — that's <b class="hl">normal, not failure.</b> Pros book roughly 1 demo per 30–50 dials. Every voicemail + email + call is a touch that adds up. One booked call = a great day.</p>
+      <p class="tip" style="margin:0">The flow: <b>Opener → one pain question → ask for 10 minutes → text the link.</b> Tabs 2–4 walk you through it; tab 5 listens live and feeds you objection answers.</p>
+    </div>
+  </section>
 
-  <div class="card">
-    <h2 class="sec">Quick responses (tap)</h2>
-    <div class="grid" id="objGrid"></div>
-  </div>
+  <!-- 2 OPENER -->
+  <section data-s="opener">
+    <h2 class="sec">First thing you say (say it relaxed, like you call all day)</h2>
+    <div class="say" id="openerBox"></div>
+    <div class="card">
+      <h3 style="margin-top:0">If a gatekeeper / someone else answers</h3>
+      <div class="say" id="gateBox" style="font-size:16px"></div>
+    </div>
+    <p class="tip">The "got 30 seconds and you can tell me to buzz off?" line disarms the hang-up reflex — almost everyone says yes to it. Then go straight into why you called.</p>
+  </section>
 
-  <div class="warn">Heads-up: this transcribes live in your browser and doesn't record or save anything. A couple of your markets (e.g. Florida) are two-party-consent for <em>recording</em> calls — live transcription isn't recording, but if you ever record, let the other person know.</div>
+  <!-- 3 THEY ANSWER -->
+  <section data-s="answer">
+    <div class="step"><span class="n">1</span><b>Ask ONE pain question</b> — then go quiet and let them talk.</div>
+    <div class="say"><div class="lbl">Ask this</div><span class="q" id="painQ"></span></div>
+
+    <div class="step"><span class="n">2</span><b>Ask for the meeting</b> — give two choices, never "when are you free?"</div>
+    <div class="say" id="bookBox"></div>
+
+    <div class="step"><span class="n">3</span><b>They said yes? Lock it in NOW</b> — text them the link while you're still on the phone.</div>
+    <div class="card">
+      <div class="link">https://calendly.com/lumavexel/30min</div>
+      <button class="copy" data-copy="https://calendly.com/lumavexel/30min">📋 Copy link</button>
+      <h3>Text to send them right now:</h3>
+      <div class="say" id="smsBox" style="font-size:15px;border-color:var(--brand)"></div>
+      <button class="copy" id="smsCopy">📋 Copy text</button>
+      <div class="ok" style="margin-top:12px"><b>Your open windows (Eastern):</b> Sun &amp; Mon 6a–8p · Tue &amp; Fri 6a–11:45a · Thu 6–9a &amp; 10a–8p · Wed/Sat off. Calendly auto-converts to their time zone — just offer two of YOUR windows.</div>
+    </div>
+    <p class="tip">If the demo's not recorded yet, you don't need it — book the call and show it live there. The pilot (set up free, pay only when it catches a job) is your easiest yes — lead with it.</p>
+  </section>
+
+  <!-- 4 VOICEMAIL -->
+  <section data-s="vm">
+    <h2 class="sec">Leave this every time you hit voicemail (≈15 sec)</h2>
+    <div class="say" id="vmBox"></div>
+    <button class="copy" id="vmCopy">📋 Copy script</button>
+    <div class="card" style="margin-top:13px">
+      <p class="tip" style="margin:0">Say your <b>callback number slowly</b> at the end. Leave ONE voicemail per shop — after that just try to catch them live. Voicemail + your email + the call = 3 touches in 2 days, which is what actually gets the callback.</p>
+    </div>
+  </section>
+
+  <!-- 5 LIVE HELP (objections) -->
+  <section data-s="obj">
+    <p class="tip" style="margin-bottom:10px">Put the call on speaker, hit Listen, and as they push back your line pops up. Tap buttons are always there as backup. (Mic needs Chrome + "Allow" when it asks.)</p>
+    <div class="listen">
+      <button id="mic" onclick="toggle()">🎤 Start listening</button>
+      <div id="status">Mic off. Click to start.</div>
+    </div>
+    <div id="heard"><span style="color:#9fb3c8">Live transcript shows here…</span></div>
+    <div id="panel"><span class="ph">Their objection's answer appears here — or tap one below.</span></div>
+    <div class="card">
+      <h2 class="sec">Tap what they said</h2>
+      <div class="grid" id="objGrid"></div>
+    </div>
+    <div class="warn">Transcribes live in your browser; nothing is recorded or saved. (Tampa/FL is two-party-consent for <em>recording</em> — live transcription isn't recording, but if you ever record a call, tell them.)</div>
+  </section>
+
+  <!-- 6 REPLIES -->
+  <section data-s="reply">
+    <p class="tip" style="margin-bottom:12px">When someone replies to your email, <b class="hl">answer within the hour.</b> Don't explain everything — just book the 10-minute call. Keep it 2–4 sentences. Tap to copy.</p>
+    <div id="replyWrap"></div>
+  </section>
+
+  <!-- 7 SHOPS -->
+  <section data-s="shops">
+    <p class="tip" style="margin-bottom:12px">Your 12 emailed shops, Phoenix first. Tap ☎️ to dial, then log the outcome — it saves on this device so you always know where you left off.</p>
+    <div id="shopList"></div>
+    <button class="copy" id="resetLog" style="margin-top:6px;border-color:var(--muted);color:var(--muted)">↺ Reset today's log</button>
+  </section>
+
+</div>
 
 <script>
+/* ---------------- DATA ---------------- */
+const SHOPS=[
+ {id:"paragon",name:"Paragon Service Pros",owner:"Chad",phone:"(480) 780-1007",tel:"+14807801007",metro:"Phoenix",
+  opener:"Hi, is Chad around? … Hey Chad, it's [your name] with Lumavexel — I emailed you about the calls that slip through when the East Valley summer rush hits. Got 30 seconds and you can tell me to buzz off?"},
+ {id:"kenmuncy",name:"Ken Muncy Air",owner:"Ken",phone:"(480) 267-9159",tel:"+14802679159",metro:"Phoenix",
+  opener:"Hi, is Ken around? … Hey Ken, it's [your name] with Lumavexel — I sent you a note about missed calls during the Phoenix summer. You've been cooling the Valley 30 years; got 30 seconds and you can tell me to buzz off?"},
+ {id:"scottsdale",name:"Scottsdale Air",owner:"Joseph",phone:"(602) 834-2160",tel:"+16028342160",metro:"Scottsdale",
+  opener:"Hi, is Joseph around? … Hey Joseph, it's [your name] with Lumavexel — I emailed you about missed calls; with Scottsdale Air's reputation those callers expected to reach you. Got 30 seconds?"},
+ {id:"unlimited",name:"Unlimited Air",owner:"Frank",phone:"(945) 998-7066",tel:"+19459987066",metro:"Dallas",
+  opener:"Hi, is Frank around? … Hey Frank, it's [your name] with Lumavexel — I emailed about the calls you can't grab when you're on a job. Got 30 seconds and you can tell me to buzz off?"},
+ {id:"suburban",name:"Suburban Heating & Air",owner:"the owner",phone:"(214) 381-1127",tel:"+12143811127",metro:"Dallas",
+  opener:"Hi, is the owner in? It's [your name] with Lumavexel — I emailed about missed calls at Suburban. Got 30 seconds for whoever runs the phones?"},
+ {id:"revolution",name:"Revolution Air",owner:"Bryan",phone:"(713) 213-4966",tel:"+17132134966",metro:"Houston",
+  opener:"Hi, is Bryan around? … Hey Bryan, it's [your name] with Lumavexel — you're owner and lead tech, so you can't always grab the phone; that's exactly what I emailed about. Got 30 seconds?"},
+ {id:"courtesy",name:"Courtesy Air",owner:"Brad",phone:"(713) 278-9933",tel:"+17132789933",metro:"Houston",
+  opener:"Hi, is Brad around? … Hey Brad, it's [your name] with Lumavexel — I emailed you about missed calls; 'Courtesy' is the whole promise and a call that rings out breaks it. Got 30 seconds?"},
+ {id:"68deg",name:"68 Degrees HVAC",owner:"Steve",phone:"(713) 367-7985",tel:"+17133677985",metro:"Houston",
+  opener:"Hi, is Steve around? … Hey Steve, it's [your name] with Lumavexel — I emailed about the calls that ring out when every line's tied up in peak heat. Got 30 seconds and you can tell me to buzz off?"},
+ {id:"3h",name:"3H AC of Tampa",owner:"the owner",phone:"(813) 979-4208",tel:"+18139794208",metro:"Tampa",
+  opener:"Hi, is the owner around? It's [your name] with Lumavexel — I emailed 3H about missed calls; for a family shop a missed call is a referral that didn't connect. Got 30 seconds?"},
+ {id:"climate",name:"Climate Control Solutions",owner:"Charles",phone:"(702) 818-4722",tel:"+17028184722",metro:"Las Vegas",
+  opener:"Hi, is Charles around? … Hey Charles, it's [your name] with Lumavexel — I emailed about the calls you can't grab in a Vegas heat wave. Got 30 seconds and you can tell me to buzz off?"},
+ {id:"bulldog",name:"Bulldog Air",owner:"Derrick",phone:"(702) 509-5005",tel:"+17025095005",metro:"Las Vegas",
+  opener:"Hi, is Derrick around? … Hey Derrick, it's [your name] with Lumavexel — I emailed about 110° days and the calls that ring out; when a customer needs help now they call the next guy. Got 30 seconds?"},
+ {id:"nevadares",name:"Nevada Residential",owner:"Timur",phone:"(702) 899-3249",tel:"+17028993249",metro:"Las Vegas",
+  opener:"Hi, is Timur around? … Hey Timur, it's [your name] with Lumavexel — I emailed about missed calls; residential callers in summer don't wait. Got 30 seconds and you can tell me to buzz off?"}
+];
+
+const REPLIES=[
+ {q:'"Sounds interesting / how does it work?"  (the dream reply)',
+  a:"Glad it caught your eye! Easiest way is a quick 10 minutes where I show you exactly what it does — a missed call turning into an instant text — and whether it fits [Shop]. Grab a time: https://calendly.com/lumavexel/30min, or tell me a couple windows that work and I'll lock one in."},
+ {q:'"How much is it?"',
+  a:"Fair question. It's a one-time setup plus a small monthly — and it's built to pay for itself if it saves a single job a month. The exact number depends on your setup, so let me show you on a quick 10-min call and you can decide if the math works: https://calendly.com/lumavexel/30min"},
+ {q:'"Send me more info / a brochure."',
+  a:"Happy to — honestly the fastest 'info' is a 90-second look on a call; it clicks the second you see it live. 10 minutes this week? https://calendly.com/lumavexel/30min"},
+ {q:'"Who is this / who am I talking to?"',
+  a:"It's [your name] with Lumavexel — I help local home-services shops stop losing jobs to missed calls. Happy to show you in 10 minutes: https://calendly.com/lumavexel/30min"},
+ {q:'"Not interested."',
+  a:"No problem at all — appreciate you replying. If you ever notice calls slipping during the busy season, I'm one email away. Wishing you a strong summer."},
+ {q:'"We don’t miss calls."',
+  a:"That's great — most shops that say that are surprised when they actually see the number. If you're ever curious, I can show you in 10 minutes with no obligation. Either way, respect the hustle."}
+];
+
 const OBJ = [
   {key:"cost", label:"💲 How much / too pricey", test:/price|cost|how much|expensive|afford|charge|pricing|\$|budget/i,
    r:"Totally fair — but think about what one job is worth to you. One install pays for this many times over, and right now you're probably losing a few of those a month to calls that just ring out. And the best part — you don't risk a thing, because the pilot's free until it actually catches you a paying job. Let me show you the math on a quick ten-minute call, and you decide?"},
@@ -121,11 +305,80 @@ const OBJ = [
    r:"Fair question — you came up as one of the better-rated shops in the area, so I reached out to you directly instead of blasting some form. I work with home-services shops to stop losing jobs to missed calls, and yours looked like a great fit. Got thirty seconds and I'll tell you exactly why I called?"}
 ];
 
+/* ---------------- STATE + PERSONALIZATION ---------------- */
+let name = localStorage.getItem('lx_name') || '';
+let shopId = localStorage.getItem('lx_shop') || SHOPS[1].id; // default Ken Muncy
+function currentShop(){return SHOPS.find(s=>s.id===shopId)||SHOPS[0];}
+function P(t){const s=currentShop();const nm=name.trim()||'[your name]';
+  return t.replace(/\[your name\]/g,nm).replace(/\[Owner\]/g,s.owner).replace(/\[metro\]/g,s.metro).replace(/\[Shop\]/g,s.name);}
+
+/* build shop dropdown */
+const shopSel=document.getElementById('shopIn');
+SHOPS.forEach(s=>{const o=document.createElement('option');o.value=s.id;o.textContent=s.name+' — '+s.metro;shopSel.appendChild(o);});
+shopSel.value=shopId;
+const nameIn=document.getElementById('nameIn');nameIn.value=name;
+
+/* ---------------- RENDER DYNAMIC TABS ---------------- */
+function renderAll(){
+  const s=currentShop();
+  // dial button
+  document.getElementById('dialNum').textContent=s.phone;
+  document.getElementById('dial').href='tel:'+s.tel;
+  // opener
+  document.getElementById('openerBox').innerHTML='<div class="lbl">Say this</div>'+P(s.opener)+
+    '<div style="margin-top:10px;font-size:14px;color:#0b8e83">Then: "I help '+s.metro+' shops stop losing jobs to calls that ring out when you’re slammed in the heat — usually a few grand a month most owners never even see."</div>';
+  document.getElementById('gateBox').innerHTML='<div class="lbl">Say this</div>'+P("Is [Owner] around? No worries — when’s the best time to catch them? I’ll ring back. It’s a quick one about [Shop] losing jobs when calls ring out in the rush.");
+  // pain question
+  document.getElementById('painQ').textContent=P("When you and the crew are slammed in peak season, what actually happens to the calls nobody can grab?");
+  // booking
+  document.getElementById('bookBox').innerHTML='<div class="lbl">Say this</div>'+P("That’s exactly what I fix. Worth 10 minutes for me to show you how it’d work for [Shop]? I won’t pitch you — if it’s not a fit I’ll say so. What’s better, tomorrow morning or Thursday afternoon?");
+  // sms
+  const sms=P("Hey [Owner], it’s [your name] from Lumavexel — here’s the link to grab your 10-min slot: https://calendly.com/lumavexel/30min. Talk soon!");
+  document.getElementById('smsBox').innerHTML='<div class="lbl">Text this</div>'+sms;
+  document.getElementById('smsCopy').dataset.copy=sms;
+  // voicemail
+  const vm=P("Hi [Owner], this is [your name] with Lumavexel — I sent you an email about the calls your shop misses during the busy season. I set up a system that texts those callers back automatically in under a minute, so the job doesn’t go to a competitor. Take a peek at that email, or call me back at this number. Thanks!");
+  document.getElementById('vmBox').innerHTML='<div class="lbl">Say this</div>'+vm;
+  document.getElementById('vmCopy').dataset.copy=vm;
+  // replies
+  document.getElementById('replyWrap').innerHTML=REPLIES.map(r=>{
+    const a=P(r.a);
+    return '<div class="card"><h3 style="margin-top:0">'+r.q+'</h3><div class="say" style="font-size:15px">'+a+
+      '</div><button class="copy" data-copy="'+a.replace(/"/g,'&quot;')+'">📋 Copy reply</button></div>';
+  }).join('');
+  // re-personalize live panel if showing a script
+  if(lastRaw) panel.innerHTML='<div class="lbl">Say this</div>'+P(lastRaw);
+  bindCopies();
+}
+
+nameIn.addEventListener('input',()=>{name=nameIn.value;localStorage.setItem('lx_name',name);renderAll();});
+shopSel.addEventListener('change',()=>{shopId=shopSel.value;localStorage.setItem('lx_shop',shopId);renderAll();});
+
+/* ---------------- TABS ---------------- */
+document.getElementById('tabs').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-t]');if(!b)return;
+  document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  const t=b.dataset.t;
+  document.querySelectorAll('section').forEach(sec=>sec.classList.toggle('on',sec.dataset.s===t));
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
+/* ---------------- COPY BUTTONS ---------------- */
+function bindCopies(){
+  document.querySelectorAll('.copy[data-copy]').forEach(b=>{
+    b.onclick=()=>{navigator.clipboard.writeText(b.dataset.copy).then(()=>{
+      const o=b.textContent;b.textContent='✓ Copied';b.classList.add('done');
+      setTimeout(()=>{b.textContent=o;b.classList.remove('done');},1400);});};
+  });
+}
+
+/* ---------------- OBJECTION LIVE TOOL ---------------- */
 const panel=document.getElementById('panel'), grid=document.getElementById('objGrid'), heard=document.getElementById('heard');
+let lastRaw=null;
 OBJ.forEach(o=>{const b=document.createElement('button');b.className='obj';b.textContent=o.label;
   b.onclick=()=>{setActive(o.key);render(o.r);};grid.appendChild(b);});
 function setActive(k){document.querySelectorAll('.obj').forEach((b,i)=>b.classList.toggle('active',OBJ[i].key===k));}
-function render(text){panel.innerHTML='<div class="lbl">Say this</div>'+text;}
+function render(raw){lastRaw=raw;panel.innerHTML='<div class="lbl">Say this</div>'+P(raw);}
 function match(t){for(const o of OBJ){if(o.test.test(t)){setActive(o.key);render(o.r);return;}}}
 
 let rec=null, on=false;
@@ -144,10 +397,39 @@ function start(){
     if(e.results[i].isFinal){heard.textContent=tr;match(tr.toLowerCase());}else{interim+=tr;}}
     if(interim)heard.textContent=interim;};
   rec.onerror=ev=>{if(ev.error==='not-allowed'||ev.error==='service-not-allowed'){on=false;setMic();
-    document.getElementById('status').innerHTML='<b>Mic blocked.</b> Click the mic icon in Chrome’s address bar and allow it, then try again.';}};
+    document.getElementById('status').innerHTML='<b>Mic blocked.</b> Click the mic icon in Chrome’s address bar, allow it, then try again.';}};
   rec.onend=()=>{if(on){try{rec.start();}catch(e){}}};
   try{rec.start();}catch(e){}
 }
+
+/* ---------------- SHOP TRACKER ---------------- */
+const LOG=JSON.parse(localStorage.getItem('lx_log')||'{}');
+const BADGES={booked:['b-booked','✅ Booked'],vm:['b-vm','📞 Voicemail'],cb:['b-cb','🔁 Callback'],no:['b-no','✖ No answer']};
+function saveLog(){localStorage.setItem('lx_log',JSON.stringify(LOG));}
+function renderShops(){
+  document.getElementById('shopList').innerHTML=SHOPS.map(s=>{
+    const st=LOG[s.id];const badge=st?'<span class="badge '+BADGES[st][0]+'">'+BADGES[st][1]+'</span>':'';
+    return '<div class="shop"><div class="top"><span class="nm">'+s.name+'</span> '+badge+
+      '<a class="call" href="tel:'+s.tel+'">☎️ Call</a></div>'+
+      '<div class="meta">'+s.owner+' · '+s.metro+' · '+s.phone+'</div>'+
+      '<div class="acts" data-id="'+s.id+'">'+
+        '<button data-st="booked">✅ Booked</button>'+
+        '<button data-st="vm">📞 Left VM</button>'+
+        '<button data-st="cb">🔁 Callback</button>'+
+        '<button data-st="no">✖ No answer</button>'+
+      '</div></div>';
+  }).join('');
+  document.querySelectorAll('.acts').forEach(a=>{
+    a.addEventListener('click',e=>{const btn=e.target.closest('button');if(!btn)return;
+      const id=a.dataset.id;LOG[id]=(LOG[id]===btn.dataset.st)?undefined:btn.dataset.st;
+      if(!LOG[id])delete LOG[id];saveLog();renderShops();});
+  });
+}
+document.getElementById('resetLog').onclick=()=>{if(confirm('Clear today’s call log?')){for(const k in LOG)delete LOG[k];saveLog();renderShops();}};
+
+/* ---------------- INIT ---------------- */
+renderAll();
+renderShops();
 </script>
 </body>
 </html>
