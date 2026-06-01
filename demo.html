@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>See it in action — Lumavexel</title>
+<meta name="description" content="Watch a missed call turn into an instant text back in under 60 seconds — exactly what your customers experience with Lumavexel." />
+<meta name="robots" content="index, follow" />
+<meta name="theme-color" content="#1f6feb" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Watch a missed call become a saved job" />
+<meta property="og:description" content="A 60-second look at the missed-call text-back in action." />
+<meta property="og:url" content="https://lumavexel.com/demo" />
+<meta property="og:image" content="https://lumavexel.com/og-image.png" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%231f6feb'/%3E%3Ctext x='50' y='71' font-size='62' font-family='Arial,sans-serif' font-weight='bold' fill='white' text-anchor='middle'%3EL%3C/text%3E%3C/svg%3E" />
+<style>
+  :root{--ink:#0f1b2d;--muted:#5b6b7f;--line:#e4e9f0;--brand:#1f6feb;--brand-d:#1554c0;--accent:#0fb5a6;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#f5f8fc;-webkit-font-smoothing:antialiased;line-height:1.5}
+  header{border-bottom:1px solid var(--line);background:#fff}
+  nav{display:flex;align-items:center;height:64px;max-width:1080px;margin:0 auto;padding:0 22px}
+  .logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:21px;letter-spacing:-.5px}
+  .logo .mark{width:28px;height:28px;border-radius:8px;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800}
+  .logo .dot{color:var(--accent)}
+  main{max-width:600px;margin:0 auto;padding:40px 22px 60px;text-align:center}
+  h1{font-size:30px;letter-spacing:-.7px;margin-bottom:8px}
+  .sub{color:var(--muted);font-size:17px;margin-bottom:30px}
+
+  /* phone */
+  .phone{width:300px;height:600px;margin:0 auto;background:#0f1b2d;border-radius:42px;padding:13px;box-shadow:0 24px 60px rgba(15,27,45,.28);position:relative}
+  .notch{position:absolute;top:13px;left:50%;transform:translateX(-50%);width:130px;height:26px;background:#0f1b2d;border-radius:0 0 16px 16px;z-index:5}
+  .screen{width:100%;height:100%;border-radius:30px;overflow:hidden;position:relative;background:linear-gradient(160deg,#1f6feb,#1554c0)}
+  .statusbar{height:34px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;color:#fff;font-size:12px;font-weight:600;position:relative;z-index:6}
+
+  /* CALL SCREEN */
+  .call{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;text-align:center;padding:30px;opacity:0}
+  .call .who{font-size:13px;letter-spacing:1px;opacity:.85;margin-bottom:6px}
+  .call .num{font-size:26px;font-weight:700;margin-bottom:4px}
+  .call .state{font-size:14px;opacity:.85;height:18px}
+  .avatar{width:96px;height:96px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:42px;margin-bottom:24px}
+  .avatar.ring{animation:ring 1s ease-in-out infinite}
+  @keyframes ring{0%,100%{transform:rotate(0)}20%{transform:rotate(-10deg)}40%{transform:rotate(10deg)}60%{transform:rotate(-6deg)}80%{transform:rotate(6deg)}}
+
+  /* MESSAGES SCREEN */
+  .msgs{position:absolute;inset:0;background:#f2f4f8;opacity:0;display:flex;flex-direction:column}
+  .msgs .top{background:#fff;border-bottom:1px solid #e4e9f0;padding:38px 16px 12px;text-align:center}
+  .msgs .top .name{font-weight:700;font-size:15px;color:#0f1b2d}
+  .msgs .top .sm{font-size:12px;color:#5b6b7f}
+  .msgs .body{flex:1;padding:16px 14px;display:flex;flex-direction:column;gap:10px;justify-content:flex-end}
+  .bubble{max-width:80%;padding:11px 14px;border-radius:18px;font-size:14px;line-height:1.4;background:#fff;color:#0f1b2d;border:1px solid #e7ebf1;align-self:flex-start;box-shadow:0 1px 2px rgba(0,0,0,.04);opacity:0;transform:translateY(10px)}
+  .bubble.show{animation:pop .4s ease forwards}
+  @keyframes pop{to{opacity:1;transform:translateY(0)}}
+  .badge{align-self:center;background:#e7f0ff;color:#1554c0;font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;opacity:0}
+  .badge.show{animation:pop .4s ease forwards}
+
+  .caption{margin-top:26px;font-size:15px;color:var(--ink);font-weight:600;min-height:24px}
+  .cta{display:inline-block;margin-top:20px;background:var(--brand);color:#fff;font-weight:600;padding:13px 26px;border-radius:10px;text-decoration:none}
+  .label{font-size:12px;color:var(--muted);margin-top:14px}
+  footer{border-top:1px solid var(--line);padding:22px;color:var(--muted);font-size:14px;text-align:center;background:#fff}
+  footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+<header><nav><a class="logo" href="/"><span class="mark">L</span><span>lumavexel<span class="dot">.</span></span></a></nav></header>
+<main>
+  <h1>Watch a missed call become a saved job</h1>
+  <p class="sub">Exactly what every customer who can't reach you experiences — automatically.</p>
+
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen">
+      <div class="statusbar"><span>9:41</span><span>📶 🔋</span></div>
+
+      <div class="call" id="callScreen">
+        <div class="avatar" id="avatar">👤</div>
+        <div class="who">INCOMING CALL</div>
+        <div class="num">(555) 012-3456</div>
+        <div class="state" id="callState">calling…</div>
+      </div>
+
+      <div class="msgs" id="msgScreen">
+        <div class="top"><div class="name">Summit HVAC</div><div class="sm">Text Message</div></div>
+        <div class="body">
+          <div class="bubble" id="b1">Hi! This is Summit HVAC — sorry we missed your call. How can we help? Just reply to this text and we'll get right back to you.</div>
+          <div class="badge" id="badge">⚡ Sent automatically in under 60 seconds</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="caption" id="caption"></div>
+  <a class="cta" href="https://calendly.com/lumavexel/30min">Set this up for my shop →</a>
+  <div class="label">Illustration of the Lumavexel missed-call text-back. Want it live on your number? <a href="/" style="color:var(--brand)">See how →</a></div>
+</main>
+<footer>© 2026 Lumavexel · <a href="/">Home</a> · <a href="/calculator">Cost calculator</a> · <a href="mailto:info@lumavexel.com">info@lumavexel.com</a></footer>
+
+<script>
+  var callS=document.getElementById('callScreen'), msgS=document.getElementById('msgScreen'),
+      avatar=document.getElementById('avatar'), callState=document.getElementById('callState'),
+      b1=document.getElementById('b1'), badge=document.getElementById('badge'), cap=document.getElementById('caption');
+  function reset(){callS.style.opacity=0;msgS.style.opacity=0;avatar.classList.remove('ring');b1.classList.remove('show');badge.classList.remove('show');cap.textContent='';}
+  function run(){
+    reset();
+    // 1. incoming call rings
+    setTimeout(function(){callS.style.transition='opacity .4s';callS.style.opacity=1;avatar.classList.add('ring');callState.textContent='calling…';cap.textContent="A customer calls — but you're on a job.";},400);
+    // 2. missed
+    setTimeout(function(){avatar.classList.remove('ring');callState.textContent='Missed call';callState.style.color='#ff6b6b';cap.textContent='No one could pick up. Normally, this job is gone.';},3800);
+    // 3. switch to messages
+    setTimeout(function(){callS.style.opacity=0;},5200);
+    setTimeout(function(){msgS.style.transition='opacity .4s';msgS.style.opacity=1;cap.textContent='…but within seconds:';},5700);
+    // 4. text appears
+    setTimeout(function(){b1.classList.add('show');},6400);
+    setTimeout(function(){badge.classList.add('show');cap.textContent='The job stays yours — and you didn’t lift a finger.';},7600);
+    // 5. loop
+    setTimeout(run,12000);
+  }
+  callState.style.color='';
+  run();
+</script>
+</body>
+</html>
