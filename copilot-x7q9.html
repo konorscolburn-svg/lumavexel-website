@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex,nofollow" />
+<title>Call Copilot</title>
+<style>
+  :root{--ink:#0f1b2d;--muted:#5b6b7f;--line:#e4e9f0;--bg:#f5f8fc;--card:#fff;
+    --brand:#1f6feb;--brand-d:#1554c0;--accent:#0fb5a6;--accent-d:#0b8e83;--red:#dc2626;}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.5;padding:18px;max-width:760px;margin:0 auto}
+  h1{font-size:21px;margin:0 0 2px}
+  .sub{color:var(--muted);font-size:13px;margin:0 0 14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:14px}
+  .ref{background:#0f1b2d;color:#fff;border:none}
+  .ref h2{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#9fb3c8;margin:0 0 5px}
+  .ref p{margin:0 0 10px;font-size:14px}.ref p:last-child{margin:0}
+  .ref .k{color:#7fe3d8;font-weight:600}
+  .listen{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+  #mic{background:var(--accent);color:#fff;border:none;font-weight:700;font-size:16px;padding:14px 20px;border-radius:12px;cursor:pointer}
+  #mic.on{background:var(--red)}
+  #status{font-size:13px;color:var(--muted)}
+  #status b{color:var(--ink)}
+  #heard{background:#fbfdff;border:1px dashed var(--line);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--muted);min-height:38px;margin-bottom:12px}
+  #panel{background:var(--card);border:2px solid var(--accent);border-radius:14px;padding:18px;margin-bottom:14px;min-height:80px;font-size:18px;line-height:1.55}
+  #panel .lbl{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-d);font-weight:700;margin-bottom:6px}
+  #panel .ph{color:var(--muted);font-size:14px}
+  h2.sec{font-size:12px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin:0 0 10px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .obj{background:#eef4ff;border:1px solid #d6e4ff;color:var(--brand-d);font-weight:600;font-size:13px;text-align:left;padding:10px 11px;border-radius:10px;cursor:pointer}
+  .obj:hover,.obj.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .note{font-size:12px;color:var(--muted);margin-top:8px}
+  .warn{font-size:12px;color:#92500a;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:10px 12px;margin-top:14px}
+</style>
+</head>
+<body>
+  <h1>📞 Call Copilot <span style="font-size:13px;color:#5b6b7f;font-weight:400">— voice mode</span></h1>
+  <p class="sub">Put the call on speaker, hit Listen, and as they talk your response pops up. Tap buttons are always there as backup. Goal: <b>book the 10-min demo.</b></p>
+
+  <div class="card ref">
+    <h2>Opener</h2>
+    <p>"Hey, is [Owner] around? … This is [your name] with Lumavexel — I know I caught you cold, gimme 30 seconds and you can tell me to buzz off? I help [metro] shops stop losing jobs to calls that ring out when you're slammed."</p>
+    <h2>Close</h2>
+    <p><span class="k">Free pilot:</span> "I'll set the whole thing up — you don't pay until it catches you a real job. Worth 10 minutes to see how it'd work?"</p>
+  </div>
+
+  <div class="listen">
+    <button id="mic" onclick="toggle()">🎤 Start listening</button>
+    <div id="status">Mic off. Click to start (allow the mic when Chrome asks).</div>
+  </div>
+  <div id="heard"><span style="color:#9fb3c8">Live transcript will show here…</span></div>
+
+  <div id="panel"><span class="ph">Your suggested line appears here when it hears an objection — or tap one below.</span></div>
+
+  <div class="card">
+    <h2 class="sec">Quick responses (tap)</h2>
+    <div class="grid" id="objGrid"></div>
+  </div>
+
+  <div class="warn">Heads-up: this transcribes live in your browser and doesn't record or save anything. A couple of your markets (e.g. Florida) are two-party-consent for <em>recording</em> calls — live transcription isn't recording, but if you ever record, let the other person know.</div>
+
+<script>
+const OBJ = [
+  {key:"gotnumber", label:"❓ How'd you get my number?", test:/how.*(did|d).*(get|got).*(number|me)|where.*(get|got).*number|who gave you/i,
+   r:"Fair question — you're listed as one of the better shops in the area, so I reached out directly instead of a form. I help shops like yours stop losing jobs to missed calls. Got thirty seconds?"},
+  {key:"sendinfo", label:"📩 Just send me info", test:/send (me )?(some )?info|email me|send (it|something)|brochure|just send/i,
+   r:"Happy to — but honestly it clicks in about twenty seconds when you see it. What's the best cell? I'll text you a quick demo right now while we're talking."},
+  {key:"think", label:"🤔 Need to think / ask someone", test:/think (about|it over)|talk to|my (partner|wife|husband|brother|guy)|run it by|get back to you/i,
+   r:"Makes sense. What do you want to think through — the cost, whether it'll work, or the setup? Let's knock that out now so you've got a real answer instead of phone tag."},
+  {key:"nomiss", label:"📵 We don't miss calls", test:/(don'?t|do not|never|rarely) miss|we (always )?(answer|catch)|always answer/i,
+   r:"That's what most owners figure — do you know that for sure, or is it a gut feel? I actually called your line earlier and it rang out, no text back. That's the exact gap we close. Worth ten minutes?"},
+  {key:"havesomething", label:"✅ We already have something", test:/already (have|use|using|got)|we (use|got)|got (someone|a guy)|have a (service|guy)|answering service/i,
+   r:"Nice — what are you using? A lot of shops have voicemail or an answering service, but those don't text the caller back in sixty seconds, which is what actually saves the job. Worth a quick look at the difference?"},
+  {key:"busy", label:"🔥 We're slammed right now", test:/busy|slammed|swamped|crazy|no time|in the middle|peak/i,
+   r:"That's exactly why I called — busy season is when the most calls slip through. It runs itself in the background, you don't lift a finger. Ten minutes when the day winds down — morning or evening better?"},
+  {key:"callback", label:"📅 Call me back later", test:/call (me )?back|call back|later|bad time|catch me|another time/i,
+   r:"You got it — what's better, later today or tomorrow morning? I'll lock it in so I'm not bugging you at a bad moment. Best number, this one?"},
+  {key:"gatekeeper", label:"🚪 Owner's not available", test:/not (here|in|available)|out on a job|in the field|leave a message|who'?s calling|what.*(this about|regarding)/i,
+   r:"No problem — when's [Owner] usually around? I'll catch them then. Quick one about the shop losing jobs to missed calls during the rush — I think they'll want to hear it."},
+  {key:"cost", label:"💲 Too expensive / cost?", test:/price|cost|how much|expensive|afford|charge|pricing|what.*(it cost|charge)/i,
+   r:"Totally fair — what's one job worth to you? Most shops are losing a few of those a month to missed calls, and this is a fraction of one. Plus the free pilot — you don't pay until it catches you a real one. Want me to show you? Ten minutes."},
+  {key:"notint", label:"🙅 Not interested", test:/not interested|no thanks|we'?re good|we are good|all set|not right now/i,
+   r:"Totally fair, I caught you cold. Can I ask — is it that missed calls aren't a problem for you, or just bad timing? No wrong answer."}
+];
+
+const panel=document.getElementById('panel'), grid=document.getElementById('objGrid'), heard=document.getElementById('heard');
+OBJ.forEach(o=>{const b=document.createElement('button');b.className='obj';b.textContent=o.label;
+  b.onclick=()=>{setActive(o.key);render(o.r);};grid.appendChild(b);});
+function setActive(k){document.querySelectorAll('.obj').forEach((b,i)=>b.classList.toggle('active',OBJ[i].key===k));}
+function render(text){panel.innerHTML='<div class="lbl">Say this</div>'+text;}
+function match(t){for(const o of OBJ){if(o.test.test(t)){setActive(o.key);render(o.r);return;}}}
+
+let rec=null, on=false;
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+function toggle(){
+  if(!SR){document.getElementById('status').innerHTML='<b>Open this in Google Chrome</b> — voice mode needs Chrome’s speech engine.';return;}
+  if(on){on=false;if(rec)rec.stop();setMic();return;}
+  on=true;setMic();start();
+}
+function setMic(){const m=document.getElementById('mic'),s=document.getElementById('status');
+  if(on){m.textContent='⏹ Stop';m.classList.add('on');s.innerHTML='<b>Listening…</b> put the call on speaker.';}
+  else{m.textContent='🎤 Start listening';m.classList.remove('on');s.textContent='Mic off. Click to start.';}}
+function start(){
+  rec=new SR();rec.continuous=true;rec.interimResults=true;rec.lang='en-US';
+  rec.onresult=e=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){const tr=e.results[i][0].transcript;
+    if(e.results[i].isFinal){heard.textContent=tr;match(tr.toLowerCase());}else{interim+=tr;}}
+    if(interim)heard.textContent=interim;};
+  rec.onerror=ev=>{if(ev.error==='not-allowed'||ev.error==='service-not-allowed'){on=false;setMic();
+    document.getElementById('status').innerHTML='<b>Mic blocked.</b> Click the mic icon in Chrome’s address bar and allow it, then try again.';}};
+  rec.onend=()=>{if(on){try{rec.start();}catch(e){}}};
+  try{rec.start();}catch(e){}
+}
+</script>
+</body>
+</html>
