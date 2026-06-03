@@ -1,121 +1,183 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>See it in action — Lumavexel</title>
-<meta name="description" content="Watch a missed call turn into an instant text back in under 60 seconds — exactly what your customers experience with Lumavexel." />
-<meta name="robots" content="index, follow" />
-<meta name="theme-color" content="#1f6feb" />
-<meta property="og:type" content="website" />
-<meta property="og:title" content="Watch a missed call become a saved job" />
-<meta property="og:description" content="A 60-second look at the missed-call text-back in action." />
-<meta property="og:url" content="https://lumavexel.com/demo" />
-<meta property="og:image" content="https://lumavexel.com/og-image.png" />
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%231f6feb'/%3E%3Ctext x='50' y='71' font-size='62' font-family='Arial,sans-serif' font-weight='bold' fill='white' text-anchor='middle'%3EL%3C/text%3E%3C/svg%3E" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lumavexel — Speed-to-Lead Demo</title>
 <style>
-  :root{--ink:#0f1b2d;--muted:#5b6b7f;--line:#e4e9f0;--brand:#1f6feb;--brand-d:#1554c0;--accent:#0fb5a6;}
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#f5f8fc;-webkit-font-smoothing:antialiased;line-height:1.5}
-  header{border-bottom:1px solid var(--line);background:#fff}
-  nav{display:flex;align-items:center;height:64px;max-width:1080px;margin:0 auto;padding:0 22px}
-  .logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:21px;letter-spacing:-.5px}
-  .logo .mark{width:28px;height:28px;border-radius:8px;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800}
-  .logo .dot{color:var(--accent)}
-  main{max-width:600px;margin:0 auto;padding:40px 22px 60px;text-align:center}
-  h1{font-size:30px;letter-spacing:-.7px;margin-bottom:8px}
-  .sub{color:var(--muted);font-size:17px;margin-bottom:30px}
-
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0;
+    --brand:#2563eb; --brand2:#1d4ed8; --green:#22c55e; --red:#ef4444;
+    --bubbleBiz:#2563eb; --bubbleCust:#e9eef5;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:radial-gradient(1200px 600px at 50% -10%,#eef4ff,#f8fafc 60%); color:var(--ink);
+    min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:32px 16px 56px;
+  }
+  .brand{font-weight:800; font-size:22px; letter-spacing:-.02em}
+  .brand b{color:var(--brand)}
+  .tagline{color:var(--muted); margin:6px 0 22px; font-size:15px; text-align:center; max-width:560px}
+  .stage{display:flex; gap:40px; align-items:center; flex-wrap:wrap; justify-content:center}
   /* phone */
-  .phone{width:300px;height:600px;margin:0 auto;background:#0f1b2d;border-radius:42px;padding:13px;box-shadow:0 24px 60px rgba(15,27,45,.28);position:relative}
-  .notch{position:absolute;top:13px;left:50%;transform:translateX(-50%);width:130px;height:26px;background:#0f1b2d;border-radius:0 0 16px 16px;z-index:5}
-  .screen{width:100%;height:100%;border-radius:30px;overflow:hidden;position:relative;background:linear-gradient(160deg,#1f6feb,#1554c0)}
-  .statusbar{height:34px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;color:#fff;font-size:12px;font-weight:600;position:relative;z-index:6}
-
-  /* CALL SCREEN */
-  .call{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;text-align:center;padding:30px;opacity:0}
-  .call .who{font-size:13px;letter-spacing:1px;opacity:.85;margin-bottom:6px}
-  .call .num{font-size:26px;font-weight:700;margin-bottom:4px}
-  .call .state{font-size:14px;opacity:.85;height:18px}
-  .avatar{width:96px;height:96px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:42px;margin-bottom:24px}
-  .avatar.ring{animation:ring 1s ease-in-out infinite}
-  @keyframes ring{0%,100%{transform:rotate(0)}20%{transform:rotate(-10deg)}40%{transform:rotate(10deg)}60%{transform:rotate(-6deg)}80%{transform:rotate(6deg)}}
-
-  /* MESSAGES SCREEN */
-  .msgs{position:absolute;inset:0;background:#f2f4f8;opacity:0;display:flex;flex-direction:column}
-  .msgs .top{background:#fff;border-bottom:1px solid #e4e9f0;padding:38px 16px 12px;text-align:center}
-  .msgs .top .name{font-weight:700;font-size:15px;color:#0f1b2d}
-  .msgs .top .sm{font-size:12px;color:#5b6b7f}
-  .msgs .body{flex:1;padding:16px 14px;display:flex;flex-direction:column;gap:10px;justify-content:flex-end}
-  .bubble{max-width:80%;padding:11px 14px;border-radius:18px;font-size:14px;line-height:1.4;background:#fff;color:#0f1b2d;border:1px solid #e7ebf1;align-self:flex-start;box-shadow:0 1px 2px rgba(0,0,0,.04);opacity:0;transform:translateY(10px)}
-  .bubble.show{animation:pop .4s ease forwards}
-  @keyframes pop{to{opacity:1;transform:translateY(0)}}
-  .badge{align-self:center;background:#e7f0ff;color:#1554c0;font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;opacity:0}
-  .badge.show{animation:pop .4s ease forwards}
-
-  .caption{margin-top:26px;font-size:15px;color:var(--ink);font-weight:600;min-height:24px}
-  .cta{display:inline-block;margin-top:20px;background:var(--brand);color:#fff;font-weight:600;padding:13px 26px;border-radius:10px;text-decoration:none}
-  .label{font-size:12px;color:var(--muted);margin-top:14px}
-  footer{border-top:1px solid var(--line);padding:22px;color:var(--muted);font-size:14px;text-align:center;background:#fff}
-  footer a{color:var(--muted)}
+  .phone{
+    width:300px; height:610px; background:#0b1220; border-radius:46px; padding:14px;
+    box-shadow:0 30px 60px rgba(15,23,42,.28), inset 0 0 0 2px #1f2937; position:relative; flex:none;
+  }
+  .notch{position:absolute; top:14px; left:50%; transform:translateX(-50%); width:140px; height:26px; background:#0b1220; border-radius:0 0 18px 18px; z-index:5}
+  .screen{position:relative; width:100%; height:100%; background:#f2f4f8; border-radius:34px; overflow:hidden}
+  .scene{position:absolute; inset:0; opacity:0; transition:opacity .45s ease; display:flex; flex-direction:column}
+  .scene.show{opacity:1}
+  /* call scene */
+  .call{background:linear-gradient(180deg,#1f2937,#0b1220); color:#fff; align-items:center; justify-content:space-between; padding:64px 0 44px}
+  .call .who{text-align:center}
+  .avatar{width:96px; height:96px; border-radius:50%; background:#334155; margin:0 auto 16px; display:flex; align-items:center; justify-content:center; font-size:38px; color:#cbd5e1}
+  .call .name{font-size:26px; font-weight:700}
+  .call .sub{color:#94a3b8; margin-top:4px; font-size:14px}
+  .call .status{margin-top:18px; font-size:14px; color:#cbd5e1; letter-spacing:.06em; text-transform:uppercase}
+  .call .status.missed{color:#fca5a5; font-weight:700}
+  .callbtns{display:flex; gap:60px}
+  .cbtn{width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:26px}
+  .decline{background:var(--red)} .accept{background:var(--green)}
+  .pulse{animation:pulse 1.1s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.55)}70%{box-shadow:0 0 0 18px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+  /* messages scene */
+  .msg{background:#f2f4f8}
+  .mhead{background:#fff; border-bottom:1px solid var(--line); padding:14px 16px; display:flex; align-items:center; gap:10px}
+  .mhead .dot{width:34px;height:34px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+  .mhead .t{font-weight:700; font-size:15px}
+  .mhead .s{color:var(--muted); font-size:12px}
+  .thread{flex:1; padding:14px 12px; overflow-y:auto; display:flex; flex-direction:column; gap:9px}
+  .row{display:flex}
+  .row.cust{justify-content:flex-start} .row.biz{justify-content:flex-end}
+  .bubble{max-width:80%; padding:9px 12px; border-radius:16px; font-size:13.5px; line-height:1.35; opacity:0; transform:translateY(8px); animation:rise .35s forwards}
+  .cust .bubble{background:var(--bubbleCust); color:#0f172a; border-bottom-left-radius:5px}
+  .biz .bubble{background:var(--bubbleBiz); color:#fff; border-bottom-right-radius:5px}
+  .meta{font-size:10.5px; color:var(--muted); margin:2px 4px 0; opacity:0; animation:rise .35s forwards}
+  .auto{display:inline-flex; align-items:center; gap:5px; font-size:10px; font-weight:700; color:var(--green); text-transform:uppercase; letter-spacing:.04em}
+  @keyframes rise{to{opacity:1; transform:translateY(0)}}
+  .typing .bubble{background:var(--bubbleCust)}
+  .typing span{display:inline-block;width:6px;height:6px;border-radius:50%;background:#94a3b8;margin:0 1px;animation:blink 1s infinite}
+  .typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+  @keyframes blink{0%,60%,100%{opacity:.25}30%{opacity:1}}
+  .banner{background:linear-gradient(90deg,#16a34a,#22c55e); color:#fff; text-align:center; padding:12px; font-weight:700; font-size:14px; opacity:0; transition:opacity .4s}
+  .banner.show{opacity:1}
+  /* controls + caption */
+  .side{max-width:360px}
+  .side h2{font-size:20px; margin:0 0 8px}
+  .step{color:var(--muted); font-size:15px; min-height:48px; line-height:1.45}
+  .controls{margin-top:18px; display:flex; gap:10px}
+  button.play{background:var(--brand); color:#fff; border:0; padding:13px 20px; border-radius:11px; font-weight:700; font-size:15px; cursor:pointer; box-shadow:0 8px 20px rgba(37,99,235,.3)}
+  button.play:hover{background:var(--brand2)}
+  button.replay{background:#fff; color:var(--ink); border:1px solid var(--line); padding:13px 18px; border-radius:11px; font-weight:600; cursor:pointer}
+  .pts{margin-top:22px; border-top:1px solid var(--line); padding-top:16px}
+  .pt{display:flex; gap:10px; align-items:flex-start; margin-bottom:10px; font-size:14px}
+  .pt .n{flex:none; width:22px;height:22px;border-radius:50%;background:#eff6ff;color:var(--brand);font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+  .foot{margin-top:30px;color:var(--muted);font-size:12.5px;text-align:center}
 </style>
 </head>
 <body>
-<header><nav><a class="logo" href="/"><span class="mark">L</span><span>lumavexel<span class="dot">.</span></span></a></nav></header>
-<main>
-  <h1>Watch a missed call become a saved job</h1>
-  <p class="sub">Exactly what every customer who can't reach you experiences — automatically.</p>
+  <div class="brand"><b>lumavexel</b></div>
+  <div class="tagline">Never lose another job to a missed call. Here's what happens the moment a customer can't get through — automatically, in under 60 seconds.</div>
 
-  <div class="phone">
-    <div class="notch"></div>
-    <div class="screen">
-      <div class="statusbar"><span>9:41</span><span>📶 🔋</span></div>
-
-      <div class="call" id="callScreen">
-        <div class="avatar" id="avatar">👤</div>
-        <div class="who">INCOMING CALL</div>
-        <div class="num">(555) 012-3456</div>
-        <div class="state" id="callState">calling…</div>
-      </div>
-
-      <div class="msgs" id="msgScreen">
-        <div class="top"><div class="name">Summit Home Services</div><div class="sm">Text Message</div></div>
-        <div class="body">
-          <div class="bubble" id="b1">Hi! This is Summit Home Services — sorry we missed your call. How can we help? Just reply to this text and we'll get right back to you.</div>
-          <div class="badge" id="badge">⚡ Sent automatically in under 60 seconds</div>
+  <div class="stage">
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="screen">
+        <!-- CALL -->
+        <div class="scene call show" id="sCall">
+          <div class="who">
+            <div class="avatar">👤</div>
+            <div class="name">Mike R.</div>
+            <div class="sub">mobile — potential customer</div>
+            <div class="status" id="callStatus">Incoming call…</div>
+          </div>
+          <div class="callbtns">
+            <div class="cbtn decline">✕</div>
+            <div class="cbtn accept pulse">📞</div>
+          </div>
+        </div>
+        <!-- MESSAGES -->
+        <div class="scene msg" id="sMsg">
+          <div class="mhead">
+            <div class="dot">YS</div>
+            <div><div class="t">Your Shop</div><div class="s">Auto text-back · active 24/7</div></div>
+          </div>
+          <div class="thread" id="thread"></div>
+          <div class="banner" id="banner">✅ New job booked — and you never touched your phone.</div>
         </div>
       </div>
     </div>
+
+    <div class="side">
+      <h2>The 60-second save</h2>
+      <div class="step" id="step">Press play to see what your system does the instant a call goes unanswered.</div>
+      <div class="controls">
+        <button class="play" id="play">▶ Play the demo</button>
+        <button class="replay" id="replay" style="display:none">↻ Replay</button>
+      </div>
+      <div class="pts">
+        <div class="pt"><div class="n">1</div><div>A customer calls. You're on a job, it's after hours, or you're on the other line — so it goes unanswered.</div></div>
+        <div class="pt"><div class="n">2</div><div>Within seconds, they get a friendly text back from your number — before they call the next shop on Google.</div></div>
+        <div class="pt"><div class="n">3</div><div>The conversation books the job. No voicemail, no callback tag, no lost lead.</div></div>
+      </div>
+      <div class="foot">~27% of calls to home-services businesses go unanswered. 78% of customers hire whoever responds first.</div>
+    </div>
   </div>
 
-  <div class="caption" id="caption"></div>
-  <a class="cta" href="https://calendly.com/lumavexel/30min">Set this up for my shop →</a>
-  <div class="label">Illustration of the Lumavexel missed-call text-back. Want it live on your number? <a href="/" style="color:var(--brand)">See how →</a></div>
-</main>
-<footer>© 2026 Lumavexel · <a href="/">Home</a> · <a href="/calculator">Cost calculator</a> · <a href="mailto:info@lumavexel.com">info@lumavexel.com</a></footer>
-
 <script>
-  var callS=document.getElementById('callScreen'), msgS=document.getElementById('msgScreen'),
-      avatar=document.getElementById('avatar'), callState=document.getElementById('callState'),
-      b1=document.getElementById('b1'), badge=document.getElementById('badge'), cap=document.getElementById('caption');
-  function reset(){callS.style.opacity=0;msgS.style.opacity=0;avatar.classList.remove('ring');b1.classList.remove('show');badge.classList.remove('show');cap.textContent='';}
-  function run(){
-    reset();
-    // 1. incoming call rings
-    setTimeout(function(){callS.style.transition='opacity .4s';callS.style.opacity=1;avatar.classList.add('ring');callState.textContent='calling…';cap.textContent="A customer calls — but you're on a job.";},400);
-    // 2. missed
-    setTimeout(function(){avatar.classList.remove('ring');callState.textContent='Missed call';callState.style.color='#ff6b6b';cap.textContent='No one could pick up. Normally, this job is gone.';},3800);
-    // 3. switch to messages
-    setTimeout(function(){callS.style.opacity=0;},5200);
-    setTimeout(function(){msgS.style.transition='opacity .4s';msgS.style.opacity=1;cap.textContent='…but within seconds:';},5700);
-    // 4. text appears
-    setTimeout(function(){b1.classList.add('show');},6400);
-    setTimeout(function(){badge.classList.add('show');cap.textContent='The job stays yours — and you didn’t lift a finger.';},7600);
-    // 5. loop
-    setTimeout(run,12000);
+  const sCall=document.getElementById('sCall'), sMsg=document.getElementById('sMsg');
+  const thread=document.getElementById('thread'), banner=document.getElementById('banner');
+  const callStatus=document.getElementById('callStatus'), step=document.getElementById('step');
+  const playBtn=document.getElementById('play'), replayBtn=document.getElementById('replay');
+  let timers=[];
+  const at=(ms,fn)=>timers.push(setTimeout(fn,ms));
+
+  function reset(){
+    timers.forEach(clearTimeout); timers=[];
+    thread.innerHTML=''; banner.classList.remove('show');
+    sMsg.classList.remove('show'); sCall.classList.add('show');
+    callStatus.textContent='Incoming call…'; callStatus.classList.remove('missed');
+    step.textContent='Press play to see what your system does the instant a call goes unanswered.';
   }
-  callState.style.color='';
-  run();
+  function bubble(side,text,metaHTML){
+    const r=document.createElement('div'); r.className='row '+side;
+    const b=document.createElement('div'); b.className='bubble'; b.textContent=text; r.appendChild(b);
+    thread.appendChild(r);
+    if(metaHTML){const m=document.createElement('div'); m.className='meta '+side; m.style.alignSelf=side==='biz'?'flex-end':'flex-start'; m.innerHTML=metaHTML; thread.appendChild(m);}
+    thread.scrollTop=thread.scrollHeight;
+  }
+  function typing(side){
+    const r=document.createElement('div'); r.className='row '+side+' typing'; r.id='typing';
+    const b=document.createElement('div'); b.className='bubble'; b.innerHTML='<span></span><span></span><span></span>'; r.appendChild(b);
+    thread.appendChild(r); thread.scrollTop=thread.scrollHeight;
+  }
+  function clearTyping(){const t=document.getElementById('typing'); if(t)t.remove();}
+
+  function run(){
+    reset(); playBtn.style.display='none'; replayBtn.style.display='inline-block';
+    // ring then miss
+    at(300,()=>{step.textContent='📞 A customer is calling — but nobody can pick up right now.';});
+    at(2200,()=>{callStatus.textContent='Missed call'; callStatus.classList.add('missed'); step.textContent='Old way: that lead just dials your competitor. With Lumavexel…';});
+    // switch to messages
+    at(3600,()=>{sCall.classList.remove('show'); sMsg.classList.add('show'); step.textContent='⚡ Your system texts them back automatically — in seconds.';});
+    at(4300,()=>bubble('biz',"Hi, this is Your Shop — sorry we missed your call! How can we help?", '<span class="auto">⚡ auto-sent · delivered in 14s</span>'));
+    // customer replies
+    at(5200,()=>typing('cust'));
+    at(6400,()=>{clearTyping(); bubble('cust',"Hey — my AC quit and the house is getting hot. Can someone come out?");});
+    at(6700,()=>{step.textContent='💬 A real conversation starts — right where the customer already is.';});
+    at(7400,()=>typing('biz'));
+    at(8500,()=>{clearTyping(); bubble('biz',"So sorry! We have an opening tomorrow 9–11am. Want me to lock it in?");});
+    at(9300,()=>typing('cust'));
+    at(10300,()=>{clearTyping(); bubble('cust',"Yes please! 🙏");});
+    at(11000,()=>typing('biz'));
+    at(12000,()=>{clearTyping(); bubble('biz',"Booked ✅ See you tomorrow 9–11am. — Your Shop");});
+    at(12800,()=>{banner.classList.add('show'); step.textContent='✅ Job booked in one minute — fully automatic, 24/7 — the difference between a missed call and a paying customer.';});
+    at(13200,()=>{replayBtn.textContent='↻ Replay';});
+  }
+  playBtn.addEventListener('click',run);
+  replayBtn.addEventListener('click',run);
 </script>
 </body>
 </html>
