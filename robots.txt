@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /copilot-x7q9
+Disallow: /copilot-x7q9.html
+
+Sitemap: https://lumavexel.com/sitemap.xml
