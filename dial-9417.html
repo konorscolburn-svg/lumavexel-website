@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Lumavexel Dialer</title>
+<script src="https://sdk.twilio.com/js/voice/releases/2.11.0/twilio.min.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  body{background:#0f1b2d;color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+  .card{background:#16243b;border:1px solid #24344c;border-radius:18px;padding:28px;width:100%;max-width:380px;box-shadow:0 14px 40px rgba(0,0,0,.35)}
+  .logo{font-weight:800;font-size:20px;margin-bottom:4px}.logo .dot{color:#0fb5a6}
+  .sub{color:#8aa0bd;font-size:13px;margin-bottom:20px}
+  #status{font-size:13px;font-weight:600;padding:8px 12px;border-radius:8px;background:#1f3147;color:#8aa0bd;margin-bottom:16px;text-align:center}
+  #status.ready{background:#0e3b2e;color:#39d39f}#status.incall{background:#13314f;color:#5bb8ff}#status.err{background:#4a1f24;color:#ff8a93}
+  input{width:100%;padding:14px 16px;font-size:20px;letter-spacing:1px;border-radius:10px;border:1px solid #2c3e57;background:#0f1b2d;color:#fff;margin-bottom:14px;text-align:center}
+  .btns{display:flex;gap:10px}
+  button{flex:1;padding:15px;font-size:16px;font-weight:700;border:none;border-radius:10px;cursor:pointer;transition:.15s}
+  button:disabled{opacity:.4;cursor:not-allowed}
+  #call{background:#0fb5a6;color:#06231f}#call:hover:not(:disabled){background:#0c9b8e}
+  #hang{background:#e5484d;color:#fff}#hang:hover:not(:disabled){background:#c93b40}
+  .hint{color:#6b7f99;font-size:12px;margin-top:16px;line-height:1.5;text-align:center}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">lumavexel<span class="dot">.</span></div>
+  <div class="sub">Setter dialer · audio runs through Twilio (no router issues)</div>
+  <div id="status">Loading…</div>
+  <input id="num" type="tel" placeholder="+1 555 123 4567" autocomplete="off" />
+  <div class="btns">
+    <button id="call" disabled>Call</button>
+    <button id="hang" disabled>Hang up</button>
+  </div>
+  <div class="hint">First time: allow the microphone when Chrome asks. Enter a US number with +1 and press Call. Reply STOP rules apply to texts only.</div>
+</div>
+
+<script>
+// ==== CONFIG ====
+// Token endpoint (Twilio Function). PASSCODE is a simple shared gate so randoms can't run up the bill.
+const TOKEN_URL = "https://dialer-6046.twil.io/token";
+const PASSCODE = "luma-setter-2026";  // must match the PASSCODE env var on the token Function
+// =================
+
+const statusEl = document.getElementById('status');
+const numEl = document.getElementById('num');
+const callBtn = document.getElementById('call');
+const hangBtn = document.getElementById('hang');
+let device, activeCall, iceServers;
+
+function setStatus(msg, cls){ statusEl.textContent = msg; statusEl.className = cls || ''; }
+
+async function init(){
+  try{
+    setStatus('Getting access…');
+    const r = await fetch(TOKEN_URL + '?passcode=' + encodeURIComponent(PASSCODE));
+    if(!r.ok){ throw new Error('token ' + r.status); }
+    const data = await r.json();
+    iceServers = data.iceServers || undefined;
+    device = new Twilio.Device(data.token, {
+      codecPreferences: ['opus','pcmu'],
+      edge: ['singapore','ashburn']   // Singapore edge first = shorter media path for the Philippines
+    });
+    device.on('registered', ()=> setStatus('Ready to call', 'ready'));
+    device.on('error', (e)=> setStatus('Error: ' + (e.message||e.code), 'err'));
+    device.on('tokenWillExpire', async ()=>{
+      try{ const rr = await fetch(TOKEN_URL+'?passcode='+encodeURIComponent(PASSCODE)); const dd = await rr.json(); device.updateToken(dd.token);}catch(_){}
+    });
+    await device.register();
+    callBtn.disabled = false;
+  }catch(err){ setStatus('Could not start dialer: ' + err.message, 'err'); }
+}
+
+callBtn.onclick = async ()=>{
+  let to = numEl.value.replace(/[^0-9+]/g,'');
+  if(!to){ setStatus('Enter a number first', 'err'); return; }
+  if(!to.startsWith('+')) to = (to.length===10 ? '+1'+to : '+'+to);
+  try{
+    setStatus('Calling ' + to + '…', 'incall');
+    callBtn.disabled = true;
+    activeCall = await device.connect({ params:{ To: to }, rtcConfiguration: iceServers ? { iceServers } : undefined });
+    activeCall.on('accept', ()=> { setStatus('In call — '+to, 'incall'); hangBtn.disabled=false; });
+    activeCall.on('disconnect', ()=> { setStatus('Ready to call','ready'); callBtn.disabled=false; hangBtn.disabled=true; activeCall=null; });
+    activeCall.on('cancel', ()=> { setStatus('Ready to call','ready'); callBtn.disabled=false; hangBtn.disabled=true; activeCall=null; });
+    hangBtn.disabled = false;
+  }catch(err){ setStatus('Call failed: '+err.message,'err'); callBtn.disabled=false; }
+};
+
+hangBtn.onclick = ()=>{ if(activeCall) activeCall.disconnect(); if(device) device.disconnectAll(); };
+
+init();
+</script>
+</body>
+</html>
